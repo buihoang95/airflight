@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    command: ["python", "main.py"]
+    ports:
+      - "5050:5050"
+    networks:
+      - app-network
+    environment:
+      - FLIGHTAPI_KEY=YOUR_API_KEY_HERE
+
+  frontend:
+    build: .
+    container_name: frontend
+    command: ["streamlit", "run", "frontend.py", "--server.port=8080"]
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - BACKEND_URL=http://backend:5050
+    depends_on:
+      - backend
+
+networks:
+  app-network:
+    driver: bridge
